@@ -40,6 +40,12 @@ jobs:
       - name: Maven build
         run: ./mvnw -B -U -T 1C clean install
       - name: Upload build artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ext-jar
+          path: target/*.jar
+      - name: Upload build error artifacts
         if: failure()
         uses: actions/upload-artifact@v4
         with:

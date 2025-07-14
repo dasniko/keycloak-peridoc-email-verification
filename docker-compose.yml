@@ -1,6 +1,6 @@
 services:
   keycloak:
-    container_name: kc_customer
+    container_name: zlb_kc
     image: quay.io/keycloak/keycloak:26.3
     command: start-dev --import-realm
     environment:
@@ -19,22 +19,11 @@ services:
       - ./target/keycloak-extensions.jar:/opt/keycloak/providers/extensions.jar
   mail:
     # UI: http://localhost:8025
-    container_name: mail_customer
+    container_name: zlb_mail
     image: axllent/mailpit:latest
     ports:
       - "8025:8025"
-  mockserver:
-    # UI: http://localhost:1080/mockserver/dashboard
-    container_name: mock_customer
-    image: mockserver/mockserver:latest
-    ports:
-      - "1080:1080"
-    environment:
-      MOCKSERVER_LOG_LEVEL: ERROR
-      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/expectations.json
-    volumes:
-      - ./mockserver-expectations.json:/config/expectations.json
 
 volumes:
   kc_data:
-    name: customer-data
+    name: zlb-kc-data
