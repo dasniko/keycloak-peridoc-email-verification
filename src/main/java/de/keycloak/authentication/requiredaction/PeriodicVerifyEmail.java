@@ -82,6 +82,7 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 			UserModel user = context.getUser();
 			if (user.getRequiredActionsStream().noneMatch(action -> action.equals(UserModel.RequiredAction.VERIFY_EMAIL.name()))) {
 				if (isOlderThanPeriod(user.getFirstAttribute(EMAIL_VERIFIED_AT), context.getConfig())) {
+					user.setEmailVerified(false);
 					user.addRequiredAction(UserModel.RequiredAction.VERIFY_EMAIL);
 					log.debug("User is required to verify email upon periodic check.");
 				}
