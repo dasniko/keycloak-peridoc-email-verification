@@ -78,7 +78,7 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 
 	@Override
 	public void evaluateTriggers(RequiredActionContext context) {
-		if (isPeriodicVerificationEnabled(context.getConfig())) {
+		if (isPeriodicVerificationEnabled(context)) {
 			UserModel user = context.getUser();
 			if (user.getRequiredActionsStream().noneMatch(action -> action.equals(UserModel.RequiredAction.VERIFY_EMAIL.name()))) {
 				if (isOlderThanPeriod(user.getFirstAttribute(EMAIL_VERIFIED_AT), context.getConfig())) {
@@ -100,7 +100,7 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 	private void process(RequiredActionContext context, boolean isChallenge) {
 		AuthenticationSessionModel authSession = context.getAuthenticationSession();
 
-		if (isPeriodicVerificationEnabled(context.getConfig())) {
+		if (isPeriodicVerificationEnabled(context)) {
 			if (!isOlderThanPeriod(context.getUser().getFirstAttribute(EMAIL_VERIFIED_AT), context.getConfig())) {
 				context.success();
 				authSession.removeAuthNote(Constants.VERIFY_EMAIL_KEY);
@@ -235,8 +235,8 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 		return ChronoUnit.MONTHS;
 	}
 
-	private boolean isPeriodicVerificationEnabled(RequiredActionConfigModel model) {
-		return getPeriod(model) > 0;
+	private boolean isPeriodicVerificationEnabled(RequiredActionContext context) {
+		return context.getRealm().isVerifyEmail() && getPeriod(context.getConfig()) > 0;
 	}
 
 	private boolean isOlderThanPeriod(String unixTimestamp, RequiredActionConfigModel model) {
