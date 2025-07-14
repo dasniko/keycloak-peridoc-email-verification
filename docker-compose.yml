@@ -1,0 +1,40 @@
+services:
+  keycloak:
+    container_name: kc_customer
+    image: quay.io/keycloak/keycloak:26.3
+    command: start-dev --import-realm
+    environment:
+      DEBUG: 'true'
+      DEBUG_PORT: '*:8787'
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_SPI_EVENTS_LISTENER_JBOSS_LOGGING_SUCCESS_LEVEL: info
+      KC_LOG_LEVEL: INFO,de.keycloak:debug
+    ports:
+      - "8080:8080"
+      - "8787:8787"
+    volumes:
+      - kc_data:/opt/keycloak/data
+      - ./src/test/resources/test-realm.json:/opt/keycloak/data/import/test-realm.json
+      - ./target/keycloak-extensions.jar:/opt/keycloak/providers/extensions.jar
+  mail:
+    # UI: http://localhost:8025
+    container_name: mail_customer
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+  mockserver:
+    # UI: http://localhost:1080/mockserver/dashboard
+    container_name: mock_customer
+    image: mockserver/mockserver:latest
+    ports:
+      - "1080:1080"
+    environment:
+      MOCKSERVER_LOG_LEVEL: ERROR
+      MOCKSERVER_INITIALIZATION_JSON_PATH: /config/expectations.json
+    volumes:
+      - ./mockserver-expectations.json:/config/expectations.json
+
+volumes:
+  kc_data:
+    name: customer-data

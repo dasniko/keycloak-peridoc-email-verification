@@ -1,0 +1,23 @@
+{
+	"id": "test",
+	"realm": "test",
+	"enabled": true,
+	"users" : [ {
+		"username" : "test",
+		"enabled" : true,
+		"totp" : false,
+		"emailVerified" : true,
+		"firstName" : "Theo",
+		"lastName" : "Tester",
+		"email" : "test@keycloak.de",
+		"credentials" : [ {
+			"type" : "password",
+			"value": "test"
+		} ],
+		"disableableCredentialTypes" : [ ],
+		"requiredActions" : [ ],
+		"realmRoles" : [ "default-roles-test" ],
+		"notBefore" : 0,
+		"groups" : [ ]
+	} ]
+}
