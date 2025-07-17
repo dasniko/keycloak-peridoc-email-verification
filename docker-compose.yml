@@ -1,6 +1,6 @@
 services:
   keycloak:
-    container_name: zlb_kc
+    container_name: pev_kc
     image: quay.io/keycloak/keycloak:26.3
     command: start-dev --import-realm
     environment:
@@ -16,14 +16,14 @@ services:
     volumes:
       - kc_data:/opt/keycloak/data
       - ./src/test/resources/test-realm.json:/opt/keycloak/data/import/test-realm.json
-      - ./target/keycloak-extensions.jar:/opt/keycloak/providers/extensions.jar
+      - ./target/periodic-email-verification.jar:/opt/keycloak/providers/periodic-email-verification.jar
   mail:
     # UI: http://localhost:8025
-    container_name: zlb_mail
+    container_name: pev_mail
     image: axllent/mailpit:latest
     ports:
       - "8025:8025"
 
 volumes:
   kc_data:
-    name: zlb-kc-data
+    name: pev-kc-data

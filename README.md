@@ -1,4 +1,4 @@
-# ZLB Keycloak Extensions
+# Keycloak Periodic Email Verification
 
 ## General
 
@@ -16,13 +16,13 @@ If you don't have local JDK installation, but Docker is available, you can use t
 
     $ ./build-with-docker.sh
 
-Both approaches will build the binary `target/keycloak-extensions.jar`.
+Both approaches will build the binary `target/periodic-email-verification.jar`.
 
 ### Download the Binaries
 
 Alternatively to building the binaries yourself, you can also download them from GitHub actions.
 
-Go to https://github.com/dasniko/zlb-keycloak/actions/workflows/maven.yml and click on the most recent workflow run.
+Go to [Actions](./actions/workflows/maven.yml) and click on the most recent workflow run.
 
 In the details of this execution, you can find the section `Artifacts` with the `ext-jar` artifact listed.
 Here you can download the artifact up until 90 days after the last build time.
