@@ -80,12 +80,10 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 	public void evaluateTriggers(RequiredActionContext context) {
 		if (isPeriodicVerificationEnabled(context)) {
 			UserModel user = context.getUser();
-			if (user.getRequiredActionsStream().noneMatch(action -> action.equals(UserModel.RequiredAction.VERIFY_EMAIL.name()))) {
-				if (isOlderThanPeriod(user.getFirstAttribute(EMAIL_VERIFIED_AT), context.getConfig())) {
-					user.setEmailVerified(false);
-					user.addRequiredAction(UserModel.RequiredAction.VERIFY_EMAIL);
-					log.debug("User is required to verify email upon periodic check.");
-				}
+			if (isOlderThanPeriod(user.getFirstAttribute(EMAIL_VERIFIED_AT), context.getConfig())) {
+				user.setEmailVerified(false);
+				user.addRequiredAction(UserModel.RequiredAction.VERIFY_EMAIL);
+				log.debug("User is required to verify email upon periodic check.");
 			}
 		} else {
 			super.evaluateTriggers(context);
@@ -243,15 +241,11 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 		if (unixTimestamp == null || unixTimestamp.isEmpty()) {
 			return true;
 		}
-		try {
-			Instant timestamp = Instant.ofEpochSecond(Long.parseLong(unixTimestamp));
-			long period = getPeriod(model);
-			TemporalUnit unit = getPeriodUnit(model);
-			Instant timeAgo = Instant.now().atZone(ZoneId.systemDefault()).minus(period, unit).toInstant();
-			return timestamp.isBefore(timeAgo);
-		} catch (NumberFormatException e) {
-			return true;
-		}
+		Instant timestamp = Instant.ofEpochSecond(Long.parseLong(unixTimestamp));
+		long period = getPeriod(model);
+		TemporalUnit unit = getPeriodUnit(model);
+		Instant timeAgo = Instant.now().atZone(ZoneId.systemDefault()).minus(period, unit).toInstant();
+		return timestamp.isBefore(timeAgo);
 	}
 
 	@Override
