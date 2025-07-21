@@ -22,7 +22,7 @@ Both approaches will build the binary `target/periodic-email-verification.jar`.
 
 Alternatively to building the binaries yourself, you can also download them from GitHub actions.
 
-Go to [Actions](./actions/workflows/maven.yml) and click on the most recent workflow run.
+Go to [Actions](https://github.com/dasniko/keycloak-peridoc-email-verification/actions/workflows/maven.yml) and click on the most recent workflow run.
 
 In the details of this execution, you can find the section `Artifacts` with the `ext-jar` artifact listed.
 Here you can download the artifact up until 90 days after the last build time.
