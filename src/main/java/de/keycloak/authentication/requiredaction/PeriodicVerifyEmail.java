@@ -81,11 +81,11 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 	public void evaluateTriggers(RequiredActionContext context) {
 		if (isPeriodicVerificationEnabled(context)) {
 			UserModel user = context.getUser();
-			if (isOlderThanPeriod(user.getFirstAttribute(EMAIL_VERIFIED_AT), context.getConfig())) {
 			if (user instanceof LightweightUserAdapter) {
 				// if user is a transient/lightweight user, don't enforce verification by email
 				return;
 			}
+			if (isOlderThanPeriod(user, context.getConfig())) {
 				user.setEmailVerified(false);
 				user.addRequiredAction(UserModel.RequiredAction.VERIFY_EMAIL);
 				log.debug("User is required to verify email upon periodic check.");
@@ -104,7 +104,7 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 		AuthenticationSessionModel authSession = context.getAuthenticationSession();
 
 		if (isPeriodicVerificationEnabled(context)) {
-			if (!isOlderThanPeriod(context.getUser().getFirstAttribute(EMAIL_VERIFIED_AT), context.getConfig())) {
+			if (!isOlderThanPeriod(context.getUser(), context.getConfig())) {
 				context.success();
 				authSession.removeAuthNote(Constants.VERIFY_EMAIL_KEY);
 				return;
@@ -242,15 +242,19 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 		return getPeriod(context.getConfig()) > 0;
 	}
 
-	private boolean isOlderThanPeriod(String unixTimestamp, RequiredActionConfigModel model) {
-		if (unixTimestamp == null || unixTimestamp.isEmpty()) {
-			return true;
+	private boolean isOlderThanPeriod(UserModel user, RequiredActionConfigModel model) {
+		String emailVerifiedAtTimestamp = user.getFirstAttribute(EMAIL_VERIFIED_AT);
+		Long timestamp;
+		if (emailVerifiedAtTimestamp != null && !emailVerifiedAtTimestamp.isEmpty()) {
+			timestamp = Long.parseLong(emailVerifiedAtTimestamp);
+		} else {
+			timestamp = user.getCreatedTimestamp();
 		}
-		Instant timestamp = Instant.ofEpochSecond(Long.parseLong(unixTimestamp));
+		Instant verifiedAt = Instant.ofEpochMilli(timestamp);
 		long period = getPeriod(model);
 		TemporalUnit unit = getPeriodUnit(model);
 		Instant timeAgo = Instant.now().atZone(ZoneId.systemDefault()).minus(period, unit).toInstant();
-		return timestamp.isBefore(timeAgo);
+		return verifiedAt.isBefore(timeAgo);
 	}
 
 	@Override

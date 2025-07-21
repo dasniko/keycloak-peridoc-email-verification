@@ -78,7 +78,7 @@ public class ExtendedVerifyEmailActionTokenHandler extends VerifyEmailActionToke
 
 		// verify user email as we know it is valid as this entry point would never have gotten here.
 		user.setEmailVerified(true);
-		user.setSingleAttribute(PeriodicVerifyEmail.EMAIL_VERIFIED_AT, String.valueOf(Time.currentTime()));
+		user.setSingleAttribute(PeriodicVerifyEmail.EMAIL_VERIFIED_AT, String.valueOf(Time.currentTimeMillis()));
 		user.removeRequiredAction(UserModel.RequiredAction.VERIFY_EMAIL);
 		authSession.removeRequiredAction(UserModel.RequiredAction.VERIFY_EMAIL);
 
