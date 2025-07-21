@@ -70,7 +70,7 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 			.label("Verification Period Unit")
 			.helpText("Select the temporal unit of the periodic verification.")
 			.type(ProviderConfigProperty.LIST_TYPE)
-			.options(List.of(ChronoUnit.HOURS.name(), ChronoUnit.DAYS.name(), ChronoUnit.WEEKS.name(), ChronoUnit.MONTHS.name()))
+			.options(List.of(ChronoUnit.MINUTES.name(), ChronoUnit.HOURS.name(), ChronoUnit.DAYS.name(), ChronoUnit.WEEKS.name(), ChronoUnit.MONTHS.name()))
 			.defaultValue(ChronoUnit.MONTHS.name())
 			.add()
 			.build();
@@ -234,7 +234,7 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 	}
 
 	private boolean isPeriodicVerificationEnabled(RequiredActionContext context) {
-		return context.getRealm().isVerifyEmail() && getPeriod(context.getConfig()) > 0;
+		return getPeriod(context.getConfig()) > 0;
 	}
 
 	private boolean isOlderThanPeriod(String unixTimestamp, RequiredActionConfigModel model) {
