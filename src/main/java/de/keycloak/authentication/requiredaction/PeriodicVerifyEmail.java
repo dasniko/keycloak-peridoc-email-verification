@@ -25,6 +25,7 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.RequiredActionConfigModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.models.light.LightweightUserAdapter;
 import org.keycloak.protocol.AuthorizationEndpointBase;
 import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.provider.ProviderConfigurationBuilder;
@@ -81,6 +82,10 @@ public class PeriodicVerifyEmail extends VerifyEmail implements ServerInfoAwareP
 		if (isPeriodicVerificationEnabled(context)) {
 			UserModel user = context.getUser();
 			if (isOlderThanPeriod(user.getFirstAttribute(EMAIL_VERIFIED_AT), context.getConfig())) {
+			if (user instanceof LightweightUserAdapter) {
+				// if user is a transient/lightweight user, don't enforce verification by email
+				return;
+			}
 				user.setEmailVerified(false);
 				user.addRequiredAction(UserModel.RequiredAction.VERIFY_EMAIL);
 				log.debug("User is required to verify email upon periodic check.");
